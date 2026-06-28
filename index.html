@@ -114,6 +114,8 @@
         color: var(--ink-faint);
         text-transform: uppercase;
         white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
       .brand-text .wordmark {
         font-family: var(--font-display);
@@ -123,6 +125,8 @@
         color: var(--ink);
         line-height: 1.05;
         white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
       .topbar-right {
         display: flex;
@@ -684,6 +688,44 @@
         }
       }
 
+      /* Extra-compact header for small phone widths, where brand text +
+         progress readout + two buttons no longer fit comfortably on one
+         line. Trims gaps/padding, drops the decorative eyebrow line, and
+         collapses Export to an icon-only button (title attr keeps it
+         accessible). Nothing else on the page is affected. */
+      @media (max-width: 480px) {
+        .topbar {
+          padding: 0 12px;
+          gap: 10px;
+        }
+        .brand {
+          gap: 8px;
+        }
+        .brand svg {
+          width: 21px;
+          height: 21px;
+        }
+        .brand-text .eyebrow {
+          display: none;
+        }
+        .topbar-right {
+          gap: 8px;
+        }
+        .progress-readout {
+          font-size: 10px;
+        }
+        .export-btn {
+          padding: 7px 9px;
+        }
+        .export-btn .btn-label {
+          display: none;
+        }
+        .reset-btn {
+          padding: 7px 10px;
+          font-size: 10px;
+        }
+      }
+
       @media (prefers-reduced-motion: reduce) {
         * {
           animation-duration: 0.001s !important;
@@ -736,7 +778,7 @@
             <path d="M8 2v8M5 7l3 3 3-3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
             <path d="M2 11v1.5A1.5 1.5 0 003.5 14h9a1.5 1.5 0 001.5-1.5V11" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
           </svg>
-          Export
+          <span class="btn-label">Export</span>
         </button>
         <button class="reset-btn" id="resetBtn" type="button">Reset</button>
       </div>
