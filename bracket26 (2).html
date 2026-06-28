@@ -1,0 +1,1881 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#07140F" />
+    <title>BRACKET26 — FIFA World Cup 2026 Predictor</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8F%86%3C/text%3E%3C/svg%3E"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Big+Shoulders+Display:wght@700;800;900&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" crossorigin="anonymous"></script>
+    <style>
+      :root {
+        --bg: #07140f;
+        --panel: #0f2a21;
+        --panel-2: #13352a;
+        --line: #1e4536;
+        --line-soft: #142b22;
+        --ink: #f4f1e6;
+        --ink-dim: #8fac9b;
+        --ink-faint: #54705f;
+        --gold: #e8b339;
+        --gold-soft: rgba(232, 179, 57, 0.16);
+        --emerald: #2fd17a;
+        --bronze: #c98a4b;
+        --radius: 14px;
+        --shadow: 0 18px 40px -20px rgba(0, 0, 0, 0.65);
+        --font-display: "Big Shoulders Display", sans-serif;
+        --font-body: "Archivo", sans-serif;
+        --font-mono: "IBM Plex Mono", monospace;
+        --topbar-h: 60px;
+        --nav-h: 44px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        background:
+          repeating-linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0.012) 0 2px,
+            transparent 2px 40px
+          ),
+          radial-gradient(circle at 50% -10%, #0e2a20 0%, #07140f 55%);
+        background-attachment: fixed;
+        color: var(--ink);
+        font-family: var(--font-body);
+        min-height: 100vh;
+        -webkit-font-smoothing: antialiased;
+      }
+      button {
+        font-family: inherit;
+      }
+      .visually-hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+      }
+
+      /* ---------- Header ---------- */
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 40;
+        height: var(--topbar-h);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 0 18px;
+        background: rgba(7, 20, 15, 0.88);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--line-soft);
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        min-width: 0;
+      }
+      .brand svg {
+        width: 24px;
+        height: 24px;
+        color: var(--gold);
+        flex-shrink: 0;
+      }
+      .brand-text {
+        min-width: 0;
+      }
+      .brand-text .eyebrow {
+        font-family: var(--font-mono);
+        font-size: 9.5px;
+        letter-spacing: 0.14em;
+        color: var(--ink-faint);
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
+      .brand-text .wordmark {
+        font-family: var(--font-display);
+        font-weight: 800;
+        font-size: 21px;
+        letter-spacing: 0.01em;
+        color: var(--ink);
+        line-height: 1.05;
+        white-space: nowrap;
+      }
+      .topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-shrink: 0;
+      }
+      .progress-readout {
+        font-family: var(--font-mono);
+        font-size: 11.5px;
+        color: var(--ink-dim);
+        letter-spacing: 0.05em;
+        white-space: nowrap;
+      }
+      .reset-btn {
+        border: 1px solid var(--line);
+        color: var(--ink-dim);
+        background: transparent;
+        padding: 7px 13px;
+        border-radius: 999px;
+        font-family: var(--font-mono);
+        font-size: 10.5px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition:
+          border-color 0.2s,
+          color 0.2s;
+      }
+      .reset-btn:hover {
+        border-color: var(--gold);
+        color: var(--gold);
+      }
+      .reset-btn:focus-visible {
+        outline: 2px solid var(--emerald);
+        outline-offset: 2px;
+      }
+
+      .export-btn {
+        border: 1px solid var(--emerald);
+        color: var(--emerald);
+        background: transparent;
+        padding: 7px 13px;
+        border-radius: 999px;
+        font-family: var(--font-mono);
+        font-size: 10.5px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        cursor: pointer;
+        white-space: nowrap;
+        transition:
+          border-color 0.2s,
+          color 0.2s,
+          background 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .export-btn:hover {
+        background: var(--emerald);
+        color: #07140f;
+      }
+      .export-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        pointer-events: none;
+      }
+      .export-btn:focus-visible {
+        outline: 2px solid var(--emerald);
+        outline-offset: 2px;
+      }
+      .export-btn svg {
+        width: 13px;
+        height: 13px;
+        flex-shrink: 0;
+      }
+
+      /* -- Export toast -- */
+      .export-toast {
+        position: fixed;
+        bottom: 24px;
+        left: 50%;
+        transform: translateX(-50%) translateY(80px);
+        background: var(--panel-2);
+        border: 1px solid var(--emerald);
+        color: var(--ink);
+        font-family: var(--font-mono);
+        font-size: 11px;
+        letter-spacing: 0.06em;
+        padding: 11px 20px;
+        border-radius: 999px;
+        box-shadow: var(--shadow);
+        z-index: 200;
+        transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.35s;
+        opacity: 0;
+        pointer-events: none;
+      }
+      .export-toast.show {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+      }
+
+      .progress-track {
+        position: sticky;
+        top: var(--topbar-h);
+        z-index: 39;
+        height: 2px;
+        background: var(--line-soft);
+      }
+      .progress-fill {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, var(--emerald), var(--gold));
+        transition: width 0.5s ease;
+      }
+
+      /* ---------- Round nav ---------- */
+      .round-nav {
+        position: sticky;
+        top: calc(var(--topbar-h) + 2px);
+        z-index: 38;
+        display: flex;
+        gap: 7px;
+        padding: 9px 18px;
+        overflow-x: auto;
+        background: rgba(7, 20, 15, 0.78);
+        backdrop-filter: blur(8px);
+        border-bottom: 1px solid var(--line-soft);
+        scrollbar-width: none;
+      }
+      .round-nav::-webkit-scrollbar {
+        display: none;
+      }
+      .round-pill {
+        font-family: var(--font-mono);
+        font-size: 10.5px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--ink-dim);
+        background: transparent;
+        border: 1px solid var(--line);
+        padding: 6px 13px;
+        border-radius: 999px;
+        cursor: pointer;
+        white-space: nowrap;
+        transition:
+          border-color 0.2s,
+          color 0.2s,
+          background 0.2s;
+      }
+      .round-pill:hover {
+        border-color: var(--ink-dim);
+        color: var(--ink);
+      }
+      .round-pill.is-complete {
+        color: #07140f;
+        background: var(--gold);
+        border-color: var(--gold);
+      }
+      .round-pill:focus-visible {
+        outline: 2px solid var(--emerald);
+        outline-offset: 2px;
+      }
+
+      /* ---------- Stage / bracket canvas ---------- */
+      .stage {
+        padding: 22px 0 8px;
+      }
+      .bracket-scroll {
+        overflow-x: auto;
+        overflow-y: visible;
+        -webkit-overflow-scrolling: touch;
+        cursor: grab;
+        padding-bottom: 6px;
+      }
+      .bracket-scroll.dragging {
+        cursor: grabbing;
+        user-select: none;
+      }
+
+      .label-row {
+        position: relative;
+        height: 30px;
+        min-width: max-content;
+        margin-bottom: 18px; /* space before first matches */
+      }
+      .label-item {
+        position: absolute;
+        top: 0;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--font-mono);
+        font-size: 10px;
+        letter-spacing: 0.13em;
+        color: var(--ink-faint);
+        text-transform: uppercase;
+        transition: color 0.3s;
+      }
+      .label-item[data-round="champion"] {
+        justify-content: center;
+      }
+      .label-item.is-complete {
+        color: var(--gold);
+      }
+
+      .canvas {
+        position: relative;
+        min-width: max-content;
+        margin: 6px 0 0;
+      }
+      #connectors {
+        position: absolute;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+      }
+
+      .conn-path {
+        fill: none;
+        stroke: var(--line);
+        stroke-width: 2;
+        opacity: 0.9;
+        transition: opacity 0.4s;
+      }
+      .conn-path.is-active {
+        stroke: url(#connGrad);
+        opacity: 1;
+      }
+      .conn-path.is-pulse {
+        stroke-dasharray: 10 7;
+        animation: dashFlow 0.9s linear forwards;
+      }
+      @keyframes dashFlow {
+        from {
+          stroke-dashoffset: 140;
+        }
+        to {
+          stroke-dashoffset: 0;
+        }
+      }
+
+      /* ---------- Match cards ---------- */
+      .match-card {
+        position: absolute;
+        display: flex;
+        flex-direction: column;
+        border-radius: var(--radius);
+        overflow: hidden;
+        background: linear-gradient(180deg, var(--panel), var(--panel-2));
+        border: 1px solid var(--line);
+        box-shadow: var(--shadow);
+      }
+      .match-card.static {
+        position: static;
+        width: 100%;
+        height: auto;
+      }
+
+      .team-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 0 13px;
+        height: 50%;
+        min-height: 0;
+        background: transparent;
+        border: none;
+        width: 100%;
+        text-align: left;
+        color: var(--ink);
+        cursor: pointer;
+        position: relative;
+      }
+      .match-card.static .team-row {
+        height: 54px;
+      }
+      .team-row + .team-row {
+        border-top: 1px solid var(--line-soft);
+      }
+      .team-row .swatch {
+        width: 5px;
+        height: 58%;
+        border-radius: 3px;
+        flex-shrink: 0;
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      .team-row .row-text {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.1;
+        overflow: hidden;
+        min-width: 0;
+      }
+      .team-row .code {
+        font-family: var(--font-display);
+        font-weight: 800;
+        font-size: 15px;
+        letter-spacing: 0.02em;
+        color: var(--ink);
+      }
+      .team-row .name {
+        font-family: var(--font-mono);
+        font-size: 9.5px;
+        letter-spacing: 0.03em;
+        color: var(--ink-faint);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-top: 1px;
+      }
+      .team-row.is-empty {
+        cursor: default;
+        opacity: 0.32;
+      }
+      .team-row.is-empty .code {
+        color: var(--ink-faint);
+      }
+      .team-row:not(.is-empty):not(.is-loser):hover {
+        background: rgba(255, 255, 255, 0.045);
+      }
+      .team-row.is-winner {
+        background: var(--gold-soft);
+      }
+      .team-row.is-winner .code {
+        color: var(--gold);
+      }
+      .team-row.is-loser {
+        opacity: 0.42;
+      }
+      .team-row.is-loser .code {
+        text-decoration: line-through;
+        text-decoration-color: var(--ink-faint);
+        text-decoration-thickness: 1px;
+      }
+      .team-row:focus-visible {
+        outline: 2px solid var(--emerald);
+        outline-offset: -2px;
+      }
+      .team-row.just-filled {
+        animation: rowFill 0.5s ease;
+      }
+      @keyframes rowFill {
+        from {
+          transform: translateX(-5px);
+          background: var(--gold-soft);
+        }
+        to {
+          transform: translateX(0);
+        }
+      }
+
+      /* ---------- Champion capstone ---------- */
+      .champion-card {
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        gap: 6px;
+        padding: 22px 14px;
+        background:
+          radial-gradient(
+            circle at 50% 0%,
+            rgba(232, 179, 57, 0.14),
+            transparent 62%
+          ),
+          linear-gradient(180deg, var(--panel), var(--panel-2));
+      }
+      .champion-card .eyebrow {
+        font-family: var(--font-mono);
+        font-size: 9.5px;
+        letter-spacing: 0.16em;
+        color: var(--ink-faint);
+        text-transform: uppercase;
+      }
+      .champion-card .trophy {
+        width: 30px;
+        height: 30px;
+        color: var(--ink-faint);
+        transition: color 0.4s;
+        margin: 2px 0;
+      }
+      .champion-card.is-revealed {
+        border-color: var(--gold);
+        box-shadow:
+          0 0 0 1px var(--gold-soft),
+          0 24px 50px -22px rgba(232, 179, 57, 0.4);
+      }
+      .champion-card.is-revealed .trophy {
+        color: var(--gold);
+        animation: trophyPulse 2.6s ease-in-out infinite;
+      }
+      @keyframes trophyPulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.09);
+        }
+      }
+      .champion-card .code {
+        font-family: var(--font-display);
+        font-weight: 800;
+        font-size: 27px;
+        color: var(--ink);
+        line-height: 1;
+      }
+      .champion-card.is-revealed .code {
+        color: var(--gold);
+      }
+      .champion-card .name {
+        font-family: var(--font-body);
+        font-size: 11.5px;
+        color: var(--ink-dim);
+      }
+      .champion-card .swatch-bar {
+        width: 42px;
+        height: 4px;
+        border-radius: 2px;
+        margin-top: 2px;
+        background: transparent;
+      }
+      .champion-card .placeholder-text {
+        font-family: var(--font-mono);
+        font-size: 10px;
+        color: var(--ink-faint);
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+      }
+
+      /* ---------- Third place section ---------- */
+      .third-section {
+        max-width: 420px;
+        margin: 46px auto 0;
+        padding: 0 20px;
+      }
+      .third-section .heading {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 11px;
+      }
+      .third-section .tag {
+        font-family: var(--font-mono);
+        font-size: 9.5px;
+        letter-spacing: 0.13em;
+        color: var(--bronze);
+        text-transform: uppercase;
+        border: 1px solid var(--bronze);
+        padding: 3px 9px;
+        border-radius: 999px;
+      }
+      .third-section .label {
+        font-family: var(--font-body);
+        font-size: 12.5px;
+        color: var(--ink-dim);
+      }
+
+      .hint-text {
+        max-width: 420px;
+        margin: 18px auto 50px;
+        padding: 0 20px;
+        font-family: var(--font-mono);
+        font-size: 10.5px;
+        color: var(--ink-faint);
+        text-align: center;
+        letter-spacing: 0.03em;
+        line-height: 1.6;
+      }
+
+      /* ---------- Modal ---------- */
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(4, 10, 8, 0.72);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 100;
+        backdrop-filter: blur(4px);
+        padding: 20px;
+      }
+      .modal-overlay.hidden {
+        display: none;
+      }
+      .modal-box {
+        background: var(--panel-2);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 26px;
+        max-width: 330px;
+        text-align: center;
+        box-shadow: var(--shadow);
+      }
+      .modal-box h3 {
+        font-family: var(--font-display);
+        font-weight: 800;
+        font-size: 20px;
+        margin: 0 0 8px;
+        color: var(--ink);
+      }
+      .modal-box p {
+        font-family: var(--font-body);
+        font-size: 13px;
+        color: var(--ink-dim);
+        margin: 0 0 20px;
+        line-height: 1.55;
+      }
+      .modal-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+      }
+      .modal-actions button {
+        font-family: var(--font-mono);
+        font-size: 11px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: 10px 16px;
+        border-radius: 10px;
+        cursor: pointer;
+        border: 1px solid var(--line);
+      }
+      .btn-ghost {
+        background: transparent;
+        color: var(--ink-dim);
+      }
+      .btn-ghost:hover {
+        color: var(--ink);
+        border-color: var(--ink-dim);
+      }
+      .btn-danger {
+        background: var(--gold);
+        color: #1a1206;
+        border-color: var(--gold);
+        font-weight: 600;
+      }
+      .btn-danger:hover {
+        filter: brightness(1.08);
+      }
+
+      @media (max-width: 720px) {
+        .brand-text .wordmark {
+          font-size: 18px;
+        }
+        .brand-text .eyebrow {
+          font-size: 8.5px;
+        }
+        .topbar {
+          padding: 0 14px;
+        }
+        .round-nav {
+          padding: 8px 14px;
+        }
+        .third-section {
+          margin-top: 36px;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation-duration: 0.001s !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.001s !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <path
+            d="M4 6H12M4 16H12M4 26H12"
+            stroke="currentColor"
+            stroke-width="2.4"
+            stroke-linecap="round"
+          />
+          <path
+            d="M12 6L20 14M12 26L20 18"
+            stroke="currentColor"
+            stroke-width="2.4"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M20 14V18"
+            stroke="currentColor"
+            stroke-width="2.4"
+            stroke-linecap="round"
+          />
+          <path
+            d="M20 16H27"
+            stroke="currentColor"
+            stroke-width="2.4"
+            stroke-linecap="round"
+          />
+          <circle cx="28.5" cy="16" r="1.7" fill="currentColor" />
+        </svg>
+        <div class="brand-text">
+          <div class="eyebrow">FIFA World Cup · 2026</div>
+          <div class="wordmark">BRACKET26</div>
+        </div>
+      </div>
+      <div class="topbar-right">
+        <span class="progress-readout" id="progressText">00/32 PICKED</span>
+        <button class="export-btn" id="exportBtn" type="button" title="Export bracket as PNG image">
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M8 2v8M5 7l3 3 3-3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M2 11v1.5A1.5 1.5 0 003.5 14h9a1.5 1.5 0 001.5-1.5V11" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+          Export
+        </button>
+        <button class="reset-btn" id="resetBtn" type="button">Reset</button>
+      </div>
+    </header>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <nav class="round-nav" aria-label="Jump to round">
+      <button class="round-pill" data-round="r32" type="button">R32</button>
+      <button class="round-pill" data-round="r16" type="button">R16</button>
+      <button class="round-pill" data-round="qf" type="button">QF</button>
+      <button class="round-pill" data-round="sf" type="button">SF</button>
+      <button class="round-pill" data-round="final" type="button">F</button>
+      <button class="round-pill" data-round="champion" type="button">★</button>
+    </nav>
+
+    <main class="stage">
+      <div class="bracket-scroll" id="bracketScroll">
+        <div class="label-row" id="labelRow"></div>
+        <div class="canvas" id="canvas">
+          <svg id="connectors" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="connGrad" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0" style="stop-color: var(--emerald)" />
+                <stop offset="1" style="stop-color: var(--gold)" />
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+      </div>
+
+      <section class="third-section">
+        <div class="heading">
+          <span class="tag">Bronze</span>
+          <span class="label">Third Place Play-off</span>
+        </div>
+        <div id="thirdPlaceSlot"></div>
+      </section>
+
+      <p class="hint-text">
+        Drag sideways to move through the rounds. Tap a team to send them
+        through to the next one.
+      </p>
+    </main>
+
+    <div id="announcer" class="visually-hidden" aria-live="polite"></div>
+
+    <div id="exportToast" class="export-toast">✓ Image saved!</div>
+
+    <div class="modal-overlay hidden" id="resetModal">
+      <div class="modal-box">
+        <h3>Reset bracket?</h3>
+        <p>
+          This clears every pick you've made, all the way back to the Round of
+          32.
+        </p>
+        <div class="modal-actions">
+          <button class="btn-ghost" id="cancelReset" type="button">
+            Keep picks
+          </button>
+          <button class="btn-danger" id="confirmReset" type="button">
+            Reset all
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      (function () {
+        "use strict";
+
+        /* =========================================================
+     1. TOURNAMENT DATA
+     Seed order taken from the supplied reference bracket.
+     Each team carries two accent colors (drawn from its flag)
+     used for the small duotone swatch on its row.
+     ========================================================= */
+        var TEAMS = [
+          { code: "GER", name: "Germany",                c1: "#FFFFFF", c2: "#000000" }, // Adidas 2024 — white home, black shorts
+          { code: "PAR", name: "Paraguay",               c1: "#FFFFFF", c2: "#D52B1E" }, // white with red/blue stripes
+          { code: "FRA", name: "France",                 c1: "#001489", c2: "#FFFFFF" }, // Nike 2024 — deep navy home
+          { code: "SWE", name: "Sweden",                 c1: "#FECC02", c2: "#006AA7" }, // Adidas — yellow primary, blue trim
+          { code: "RSA", name: "South Africa",           c1: "#FFB612", c2: "#007A4D" }, // Puma 2024 — gold/green Bafana Bafana
+          { code: "CAN", name: "Canada",                 c1: "#D80621", c2: "#FFFFFF" }, // Nike — red home
+          { code: "NED", name: "Netherlands",            c1: "#FF4F00", c2: "#FFFFFF" }, // Nike 2024 — vibrant orange, white trim
+          { code: "MAR", name: "Morocco",                c1: "#C1272D", c2: "#006233" }, // Adidas — red, dark green
+          { code: "POR", name: "Portugal",               c1: "#D2122E", c2: "#005B2A" }, // Nike 2024 — red jersey, green shorts
+          { code: "CRO", name: "Croatia",                c1: "#EF2B2D", c2: "#FFFFFF" }, // Nike 2024 — red/white checkerboard
+          { code: "ESP", name: "Spain",                  c1: "#AA151B", c2: "#FFD700" }, // Adidas 2024 — red, gold trim
+          { code: "AUT", name: "Austria",                c1: "#ED2939", c2: "#FFFFFF" }, // Puma — red/white
+          { code: "USA", name: "United States",          c1: "#FFFFFF", c2: "#002868" }, // Nike 2024 — white home, navy trim
+          { code: "BIH", name: "Bosnia and Herzegovina", c1: "#002395", c2: "#FECB00" }, // blue, yellow diagonal
+          { code: "BEL", name: "Belgium",                c1: "#ED2939", c2: "#1A1A1A" }, // Adidas 2024 — red primary home
+          { code: "SEN", name: "Senegal",                c1: "#FFFFFF", c2: "#00853F" }, // Puma 2024 — white home, green trim
+          { code: "BRA", name: "Brazil",                 c1: "#FED100", c2: "#009C3B" }, // Nike 2024 — canary yellow, green
+          { code: "JPN", name: "Japan",                  c1: "#211F6E", c2: "#BC002D" }, // Adidas 2024 — deep navy/indigo home
+          { code: "CIV", name: "Côte d'Ivoire",          c1: "#F77F00", c2: "#FFFFFF" }, // Puma — orange home, white trim
+          { code: "NOR", name: "Norway",                 c1: "#EF2B2D", c2: "#FFFFFF" }, // Nike 2024 — red/white
+          { code: "MEX", name: "Mexico",                 c1: "#006847", c2: "#FFFFFF" }, // Adidas 2024 — green home, white trim
+          { code: "ECU", name: "Ecuador",                c1: "#FFD100", c2: "#002D6E" }, // yellow primary, navy trim
+          { code: "ENG", name: "England",                c1: "#FFFFFF", c2: "#003090" }, // Nike 2024 — white home, navy blue
+          { code: "COD", name: "DR Congo",               c1: "#007FFF", c2: "#F7D618" }, // sky blue, yellow
+          { code: "ARG", name: "Argentina",              c1: "#74ACDF", c2: "#FFFFFF" }, // Adidas 2024 — sky blue/white stripes
+          { code: "CPV", name: "Cabo Verde",             c1: "#003893", c2: "#CF2027" }, // blue, red
+          { code: "AUS", name: "Australia",              c1: "#FFD200", c2: "#00843D" }, // Nike 2024 — gold/green Socceroos home
+          { code: "EGY", name: "Egypt",                  c1: "#CE1126", c2: "#FFFFFF" }, // red home, white trim
+          { code: "SUI", name: "Switzerland",            c1: "#DA291C", c2: "#FFFFFF" }, // Puma 2024 — red/white
+          { code: "ALG", name: "Algeria",                c1: "#FFFFFF", c2: "#006233" }, // white home, green trim
+          { code: "COL", name: "Colombia",               c1: "#FCD116", c2: "#003087" }, // Adidas 2024 — yellow, navy blue
+          { code: "GHA", name: "Ghana",                  c1: "#FFFFFF", c2: "#000000" }, // white home, black trim
+        ];
+
+        var ROUND_ORDER = ["r32", "r16", "qf", "sf", "final"];
+        var COLUMN_ORDER = ["r32", "r16", "qf", "sf", "final", "champion"];
+        var NEXT_ROUND = { r32: "r16", r16: "qf", qf: "sf", sf: "final" };
+        var PREV_ROUND = { r16: "r32", qf: "r16", sf: "qf", final: "sf" };
+        var ROUND_LABELS = {
+          r32: "Round of 32",
+          r16: "Round of 16",
+          qf: "Quarter-finals",
+          sf: "Semi-finals",
+          final: "Final",
+          champion: "Champion",
+        };
+        var STORAGE_KEY = "wc26-bracket-predictor-v1";
+
+        function countFor(round) {
+          return { r32: 16, r16: 8, qf: 4, sf: 2, final: 1 }[round];
+        }
+
+        /* =========================================================
+     2. BRACKET MODEL
+     ========================================================= */
+        var matches = {};
+
+        function buildMatches(teams) {
+          var m = {};
+          var i;
+          for (i = 0; i < 16; i++) {
+            m["r32-" + i] = {
+              id: "r32-" + i,
+              round: "r32",
+              a: { team: teams[2 * i] },
+              b: { team: teams[2 * i + 1] },
+              winner: null,
+            };
+          }
+          for (i = 0; i < 8; i++) {
+            m["r16-" + i] = {
+              id: "r16-" + i,
+              round: "r16",
+              a: { from: "r32-" + 2 * i },
+              b: { from: "r32-" + (2 * i + 1) },
+              winner: null,
+            };
+          }
+          for (i = 0; i < 4; i++) {
+            m["qf-" + i] = {
+              id: "qf-" + i,
+              round: "qf",
+              a: { from: "r16-" + 2 * i },
+              b: { from: "r16-" + (2 * i + 1) },
+              winner: null,
+            };
+          }
+          for (i = 0; i < 2; i++) {
+            m["sf-" + i] = {
+              id: "sf-" + i,
+              round: "sf",
+              a: { from: "qf-" + 2 * i },
+              b: { from: "qf-" + (2 * i + 1) },
+              winner: null,
+            };
+          }
+          m["final-0"] = {
+            id: "final-0",
+            round: "final",
+            a: { from: "sf-0" },
+            b: { from: "sf-1" },
+            winner: null,
+          };
+          m["third-0"] = {
+            id: "third-0",
+            round: "third",
+            a: { from: "sf-0", wantLoser: true },
+            b: { from: "sf-1", wantLoser: true },
+            winner: null,
+          };
+          return m;
+        }
+
+        function resolveSlotTeam(slot) {
+          if (slot.team) return slot.team;
+          var src = matches[slot.from];
+          if (!src) return null;
+          return slot.wantLoser
+            ? src.loserTeam || null
+            : src.winnerTeam || null;
+        }
+
+        function resolveRound(round) {
+          Object.keys(matches).forEach(function (id) {
+            var m = matches[id];
+            if (m.round !== round) return;
+            m.aTeam = resolveSlotTeam(m.a);
+            m.bTeam = resolveSlotTeam(m.b);
+            if (
+              m.winner &&
+              (!m.aTeam || m.aTeam.code !== m.winner) &&
+              (!m.bTeam || m.bTeam.code !== m.winner)
+            ) {
+              m.winner = null; // upstream pick changed, this pick is no longer valid
+            }
+            m.winnerTeam = m.winner
+              ? m.aTeam && m.aTeam.code === m.winner
+                ? m.aTeam
+                : m.bTeam
+              : null;
+            m.loserTeam = m.winnerTeam
+              ? m.winnerTeam === m.aTeam
+                ? m.bTeam
+                : m.aTeam
+              : null;
+          });
+        }
+
+        function resolveAll() {
+          ROUND_ORDER.forEach(resolveRound);
+          resolveRound("third");
+        }
+
+        function setWinner(matchId, code) {
+          var m = matches[matchId];
+          if (!m || m.winner === code) return;
+          m.winner = code;
+          resolveAll();
+          persist();
+          renderAll();
+          var team = TEAMS.filter(function (t) {
+            return t.code === code;
+          })[0];
+          announce((team ? team.name : code) + " advances.");
+        }
+
+        function resetAll() {
+          Object.keys(matches).forEach(function (id) {
+            matches[id].winner = null;
+          });
+          resolveAll();
+          persist();
+          renderAll();
+          announce("Bracket reset.");
+        }
+
+        /* =========================================================
+     3. PERSISTENCE
+     ========================================================= */
+        function persist() {
+          try {
+            var data = {};
+            Object.keys(matches).forEach(function (id) {
+              if (matches[id].winner) data[id] = matches[id].winner;
+            });
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+          } catch (e) {
+            /* storage unavailable — fail silently */
+          }
+        }
+
+        function load() {
+          try {
+            var raw = localStorage.getItem(STORAGE_KEY);
+            if (!raw) return;
+            var data = JSON.parse(raw);
+            Object.keys(data).forEach(function (id) {
+              if (matches[id]) matches[id].winner = data[id];
+            });
+          } catch (e) {
+            /* corrupt data — ignore */
+          }
+        }
+
+        /* =========================================================
+     4. GEOMETRY
+     Card centers are computed recursively: each round's center
+     is the midpoint of the two matches feeding into it.
+     ========================================================= */
+        var centerMemo = {};
+
+        function getGeom() {
+          var mobile = window.innerWidth < 720;
+          return mobile
+            ? {
+                ROW_H: 58,
+                GAP: 14,
+                CARD_W: 172,
+                COL_GAP: 46,
+                CHAMP_W: 188,
+                CHAMP_H: 160,
+              }
+            : {
+                ROW_H: 72,
+                GAP: 24,
+                CARD_W: 216,
+                COL_GAP: 72,
+                CHAMP_W: 244,
+                CHAMP_H: 200,
+              };
+        }
+
+        function colX(geom, colIdx) {
+          return colIdx * (geom.CARD_W + geom.COL_GAP);
+        }
+
+        function centerOf(geom, round, i) {
+          var key = round + ":" + i;
+          if (centerMemo[key] !== undefined) return centerMemo[key];
+          var val;
+          if (round === "r32") {
+            val = i * (geom.ROW_H + geom.GAP) + geom.ROW_H / 2;
+          } else if (round === "champion") {
+            val = centerOf(geom, "final", 0);
+          } else {
+            var prev = PREV_ROUND[round];
+            val =
+              (centerOf(geom, prev, 2 * i) + centerOf(geom, prev, 2 * i + 1)) /
+              2;
+          }
+          centerMemo[key] = val;
+          return val;
+        }
+
+        function splitId(id) {
+          var idx = id.lastIndexOf("-");
+          return [id.slice(0, idx), id.slice(idx + 1)];
+        }
+
+        /* =========================================================
+     5. DOM CONSTRUCTION (built once)
+     ========================================================= */
+        var domCards = {};
+        var domRows = {};
+        var championRefs = null;
+
+        var canvasEl, svgEl, labelRowEl, bracketScrollEl;
+
+        function buildRow(matchId, slotKey) {
+          var btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "team-row is-empty";
+          btn.dataset.match = matchId;
+          btn.dataset.slot = slotKey;
+          btn.disabled = true;
+          btn.innerHTML =
+            '<span class="swatch"></span>' +
+            '<span class="row-text"><span class="code">TBD</span><span class="name"></span></span>';
+          btn.addEventListener("click", function () {
+            if (btn.disabled) return;
+            var code = btn.dataset.code;
+            if (!code) return;
+            setWinner(matchId, code);
+          });
+          return btn;
+        }
+
+        function buildMatchCardEl(id, round) {
+          var card = document.createElement("div");
+          card.className = "match-card";
+          card.dataset.round = round;
+          var rowA = buildRow(id, "a");
+          var rowB = buildRow(id, "b");
+          card.appendChild(rowA);
+          card.appendChild(rowB);
+          domCards[id] = card;
+          domRows[id] = { a: rowA, b: rowB };
+          return card;
+        }
+
+        function buildChampionCardEl() {
+          var card = document.createElement("div");
+          card.className = "match-card champion-card";
+          card.dataset.round = "champion";
+          card.innerHTML =
+            '<div class="eyebrow">Champion</div>' +
+            '<svg class="trophy" viewBox="0 0 24 24" fill="none" aria-hidden="true">' +
+            '<path d="M7 3H17V7C17 10.3 14.8 13 12 13C9.2 13 7 10.3 7 7V3Z" stroke="currentColor" stroke-width="1.6"/>' +
+            '<path d="M7 5H4.5C4.5 8 6 9.5 8 9.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>' +
+            '<path d="M17 5H19.5C19.5 8 18 9.5 16 9.8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>' +
+            '<path d="M12 13V17" stroke="currentColor" stroke-width="1.6"/>' +
+            '<path d="M8 21H16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>' +
+            '<path d="M9 17H15L16 21H8L9 17Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>' +
+            "</svg>" +
+            '<div class="code">—</div>' +
+            '<div class="name"></div>' +
+            '<div class="swatch-bar"></div>' +
+            '<div class="placeholder-text">Awaiting the Final</div>';
+          championRefs = {
+            card: card,
+            code: card.querySelector(".code"),
+            name: card.querySelector(".name"),
+            swatchBar: card.querySelector(".swatch-bar"),
+            placeholder: card.querySelector(".placeholder-text"),
+          };
+          return card;
+        }
+
+        function buildDOM() {
+          canvasEl = document.getElementById("canvas");
+          svgEl = document.getElementById("connectors");
+          labelRowEl = document.getElementById("labelRow");
+          bracketScrollEl = document.getElementById("bracketScroll");
+
+          // round labels
+          COLUMN_ORDER.forEach(function (round) {
+            var label = document.createElement("div");
+            label.className = "label-item";
+            label.dataset.round = round;
+            label.textContent = ROUND_LABELS[round];
+            labelRowEl.appendChild(label);
+          });
+
+          // match cards
+          ROUND_ORDER.forEach(function (round) {
+            var n = countFor(round);
+            for (var i = 0; i < n; i++) {
+              var id = round + "-" + i;
+              canvasEl.appendChild(buildMatchCardEl(id, round));
+            }
+          });
+
+          // champion capstone
+          canvasEl.appendChild(buildChampionCardEl());
+
+          // third place — lives outside the canvas, in its own static section
+          var thirdCard = buildMatchCardEl("third-0", "third");
+          thirdCard.classList.add("static");
+          document.getElementById("thirdPlaceSlot").appendChild(thirdCard);
+
+          // connector paths: every match in r32..sf points at its next match;
+          // the final points at the champion capstone.
+          ROUND_ORDER.slice(0, -1).forEach(function (round) {
+            var n = countFor(round);
+            for (var i = 0; i < n; i++) {
+              var path = document.createElementNS(
+                "http://www.w3.org/2000/svg",
+                "path",
+              );
+              path.classList.add("conn-path");
+              path.dataset.from = round + "-" + i;
+              svgEl.appendChild(path);
+            }
+          });
+          var finalPath = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "path",
+          );
+          finalPath.classList.add("conn-path");
+          finalPath.dataset.from = "final-0";
+          svgEl.appendChild(finalPath);
+        }
+
+        /* =========================================================
+     6. LAYOUT (positions — recomputed on load + resize)
+     ========================================================= */
+        function layoutCards(geom) {
+          ROUND_ORDER.forEach(function (round) {
+            var colIdx = COLUMN_ORDER.indexOf(round);
+            var n = countFor(round);
+            for (var i = 0; i < n; i++) {
+              var el = domCards[round + "-" + i];
+              el.style.left = colX(geom, colIdx) + "px";
+              el.style.top = centerOf(geom, round, i) - geom.ROW_H / 2 + "px";
+              el.style.width = geom.CARD_W + "px";
+              el.style.height = geom.ROW_H + "px";
+            }
+          });
+          var champIdx = COLUMN_ORDER.indexOf("champion");
+          championRefs.card.style.left = colX(geom, champIdx) + "px";
+          championRefs.card.style.top =
+            centerOf(geom, "champion", 0) - geom.CHAMP_H / 2 + "px";
+          championRefs.card.style.width = geom.CHAMP_W + "px";
+          championRefs.card.style.height = geom.CHAMP_H + "px";
+        }
+
+        function layoutLabels(geom) {
+          COLUMN_ORDER.forEach(function (round, idx) {
+            var el = labelRowEl.querySelector(
+              '.label-item[data-round="' + round + '"]',
+            );
+            el.style.left = colX(geom, idx) + "px";
+            el.style.width =
+              (round === "champion" ? geom.CHAMP_W : geom.CARD_W) + "px";
+          });
+        }
+
+        function layoutConnectors(geom) {
+          var paths = svgEl.querySelectorAll(".conn-path");
+          paths.forEach(function (path) {
+            var fromId = path.dataset.from;
+            var parts = splitId(fromId);
+            var round = parts[0];
+            var idx = parseInt(parts[1], 10);
+            var colIdx = COLUMN_ORDER.indexOf(round);
+            var x1 = colX(geom, colIdx) + geom.CARD_W;
+            var y1 = centerOf(geom, round, idx);
+            var targetRound, targetIdx;
+            if (round === "final") {
+              targetRound = "champion";
+              targetIdx = 0;
+            } else {
+              targetRound = NEXT_ROUND[round];
+              targetIdx = Math.floor(idx / 2);
+            }
+            var colIdx2 = COLUMN_ORDER.indexOf(targetRound);
+            var x2 = colX(geom, colIdx2);
+            var y2 = centerOf(geom, targetRound, targetIdx);
+            var midx = (x1 + x2) / 2;
+            path.setAttribute(
+              "d",
+              "M" +
+                x1 +
+                "," +
+                y1 +
+                " C" +
+                midx +
+                "," +
+                y1 +
+                " " +
+                midx +
+                "," +
+                y2 +
+                " " +
+                x2 +
+                "," +
+                y2,
+            );
+          });
+        }
+
+        function layout() {
+          centerMemo = {};
+          var geom = getGeom();
+          var canvasWidth = colX(geom, 5) + geom.CHAMP_W;
+          var canvasHeight = 16 * (geom.ROW_H + geom.GAP) - geom.GAP;
+
+          canvasEl.style.width = canvasWidth + "px";
+          canvasEl.style.height = canvasHeight + "px";
+          labelRowEl.style.width = canvasWidth + "px";
+          svgEl.setAttribute("width", canvasWidth);
+          svgEl.setAttribute("height", canvasHeight);
+          svgEl.setAttribute(
+            "viewBox",
+            "0 0 " + canvasWidth + " " + canvasHeight,
+          );
+
+          layoutCards(geom);
+          layoutLabels(geom);
+          layoutConnectors(geom);
+        }
+
+        /* =========================================================
+     7. RENDERING (content — recomputed after every pick)
+     ========================================================= */
+        function renderMatchCard(id) {
+          var m = matches[id];
+          var rows = domRows[id];
+          ["a", "b"].forEach(function (slotKey) {
+            var team = slotKey === "a" ? m.aTeam : m.bTeam;
+            var btn = rows[slotKey];
+            var prevCode = btn.dataset.code || "";
+            var newCode = team ? team.code : "";
+            btn.dataset.code = newCode;
+
+            var codeEl = btn.querySelector(".code");
+            var nameEl = btn.querySelector(".name");
+            var swatchEl = btn.querySelector(".swatch");
+
+            if (team) {
+              btn.disabled = false;
+              btn.classList.remove("is-empty");
+              codeEl.textContent = team.code;
+              nameEl.textContent = team.name;
+              swatchEl.style.background =
+                "linear-gradient(to bottom, " +
+                team.c1 +
+                " 50%, " +
+                team.c2 +
+                " 50%)";
+            } else {
+              btn.disabled = true;
+              btn.classList.add("is-empty");
+              codeEl.textContent = "TBD";
+              nameEl.textContent = "";
+              swatchEl.style.background = "transparent";
+            }
+
+            var isWinner = !!(m.winner && team && team.code === m.winner);
+            var isLoser = !!(m.winner && team && team.code !== m.winner);
+            btn.classList.toggle("is-winner", isWinner);
+            btn.classList.toggle("is-loser", isLoser);
+
+            if (newCode && newCode !== prevCode) {
+              btn.classList.remove("just-filled");
+              window.requestAnimationFrame(function () {
+                btn.classList.add("just-filled");
+              });
+              btn.addEventListener("animationend", function handler() {
+                btn.classList.remove("just-filled");
+                btn.removeEventListener("animationend", handler);
+              });
+            }
+          });
+        }
+
+        function renderChampion() {
+          var m = matches["final-0"];
+          var decided = !!m.winnerTeam;
+          championRefs.card.classList.toggle("is-revealed", decided);
+          if (decided) {
+            championRefs.code.textContent = m.winnerTeam.code;
+            championRefs.name.textContent = m.winnerTeam.name;
+            championRefs.swatchBar.style.background =
+              "linear-gradient(90deg, " +
+              m.winnerTeam.c1 +
+              ", " +
+              m.winnerTeam.c2 +
+              ")";
+            championRefs.placeholder.textContent = "World Champion";
+          } else {
+            championRefs.code.textContent = "—";
+            championRefs.name.textContent = "";
+            championRefs.swatchBar.style.background = "transparent";
+            championRefs.placeholder.textContent = "Awaiting the Final";
+          }
+        }
+
+        function updateConnectors() {
+          var paths = svgEl.querySelectorAll(".conn-path");
+          paths.forEach(function (path) {
+            var id = path.dataset.from;
+            var m = matches[id];
+            var active = !!(m && m.winner);
+            var was = path.dataset.wasActive === "1";
+            path.classList.toggle("is-active", active);
+            if (active && !was) {
+              path.classList.remove("is-pulse");
+              window.requestAnimationFrame(function () {
+                path.classList.add("is-pulse");
+              });
+              path.addEventListener("animationend", function handler() {
+                path.classList.remove("is-pulse");
+                path.removeEventListener("animationend", handler);
+              });
+            }
+            path.dataset.wasActive = active ? "1" : "0";
+          });
+        }
+
+        function updateProgress() {
+          var ids = Object.keys(matches);
+          var total = ids.length;
+          var done = ids.filter(function (id) {
+            return !!matches[id].winner;
+          }).length;
+          document.getElementById("progressText").textContent =
+            String(done).padStart(2, "0") + "/" + total + " PICKED";
+          document.getElementById("progressFill").style.width =
+            ((done / total) * 100).toFixed(1) + "%";
+
+          ROUND_ORDER.forEach(function (round) {
+            var inRound = ids.filter(function (id) {
+              return matches[id].round === round;
+            });
+            var complete =
+              inRound.length > 0 &&
+              inRound.every(function (id) {
+                return !!matches[id].winner;
+              });
+            var labelEl = labelRowEl.querySelector(
+              '.label-item[data-round="' + round + '"]',
+            );
+            if (labelEl) labelEl.classList.toggle("is-complete", complete);
+            var pillEl = document.querySelector(
+              '.round-pill[data-round="' + round + '"]',
+            );
+            if (pillEl) pillEl.classList.toggle("is-complete", complete);
+          });
+          var champComplete = !!matches["final-0"].winner;
+          var champLabel = labelRowEl.querySelector(
+            '.label-item[data-round="champion"]',
+          );
+          if (champLabel)
+            champLabel.classList.toggle("is-complete", champComplete);
+          var champPill = document.querySelector(
+            '.round-pill[data-round="champion"]',
+          );
+          if (champPill)
+            champPill.classList.toggle("is-complete", champComplete);
+        }
+
+        function renderAll() {
+          Object.keys(matches).forEach(renderMatchCard);
+          renderChampion();
+          updateConnectors();
+          updateProgress();
+        }
+
+        function announce(text) {
+          var el = document.getElementById("announcer");
+          if (!el) return;
+          el.textContent = "";
+          window.requestAnimationFrame(function () {
+            el.textContent = text;
+          });
+        }
+
+        /* =========================================================
+     8. INTERACTIONS — nav pills, drag-scroll, reset modal
+     ========================================================= */
+        function bindNavPills() {
+          document.querySelectorAll(".round-pill").forEach(function (pill) {
+            pill.addEventListener("click", function () {
+              var round = pill.dataset.round;
+              var geom = getGeom();
+              var idx = COLUMN_ORDER.indexOf(round);
+              var x = colX(geom, idx) - 20;
+              bracketScrollEl.scrollTo({
+                left: Math.max(0, x),
+                behavior: "smooth",
+              });
+            });
+          });
+        }
+
+        function bindDragScroll() {
+          var isDown = false,
+            startX = 0,
+            startScroll = 0;
+          bracketScrollEl.addEventListener("pointerdown", function (e) {
+            if (e.target.closest(".team-row")) return;
+            isDown = true;
+            bracketScrollEl.classList.add("dragging");
+            startX = e.clientX;
+            startScroll = bracketScrollEl.scrollLeft;
+          });
+          window.addEventListener("pointermove", function (e) {
+            if (!isDown) return;
+            bracketScrollEl.scrollLeft = startScroll - (e.clientX - startX);
+          });
+          window.addEventListener("pointerup", function () {
+            isDown = false;
+            bracketScrollEl.classList.remove("dragging");
+          });
+        }
+
+        /* =========================================================
+     10. EXPORT TO IMAGE
+     ========================================================= */
+        function showExportToast() {
+          var toast = document.getElementById("exportToast");
+          toast.classList.add("show");
+          setTimeout(function () {
+            toast.classList.remove("show");
+          }, 2800);
+        }
+
+        function bindExportBtn() {
+          var btn = document.getElementById("exportBtn");
+          if (!btn) return;
+          btn.addEventListener("click", doExport);
+        }
+
+        function doExport() {
+          var btn = document.getElementById("exportBtn");
+          if (btn.disabled) return;
+
+          if (typeof html2canvas === "undefined") {
+            alert("Export library not loaded yet. Please wait a moment and try again.");
+            return;
+          }
+
+          /* -- lock button -- */
+          var originalHTML = btn.innerHTML;
+          btn.innerHTML =
+            '<svg viewBox="0 0 16 16" fill="none" aria-hidden="true" style="width:13px;height:13px;animation:spin 0.8s linear infinite;">' +
+            '<circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="2" stroke-dasharray="28" stroke-dashoffset="10" stroke-linecap="round"/>' +
+            "</svg> Exporting\u2026";
+          btn.disabled = true;
+
+          if (!document.getElementById("spinKf")) {
+            var kf = document.createElement("style");
+            kf.id = "spinKf";
+            kf.textContent = "@keyframes spin{to{transform:rotate(360deg)}}";
+            document.head.appendChild(kf);
+          }
+
+          /* -- compute bracket dimensions -- */
+          var cw = parseInt(canvasEl.style.width, 10) || canvasEl.offsetWidth;
+          var ch = parseInt(canvasEl.style.height, 10) || canvasEl.offsetHeight;
+          var PAD = 32;
+          var exportW = cw + PAD * 2;
+
+          /* -- build off-screen container -- */
+          var wrap = document.createElement("div");
+          wrap.style.cssText = [
+            "position:fixed",
+            "top:-999999px",
+            "left:0",
+            "width:" + exportW + "px",
+            "background:#07140f",
+            "padding:" + PAD + "px",
+            "font-family:Archivo,sans-serif",
+            "color:#f4f1e6",
+            "--bg:#07140f",
+            "--panel:#0f2a21",
+            "--panel-2:#13352a",
+            "--line:#1e4536",
+            "--line-soft:#142b22",
+            "--ink:#f4f1e6",
+            "--ink-dim:#8fac9b",
+            "--ink-faint:#54705f",
+            "--gold:#e8b339",
+            "--gold-soft:rgba(232,179,57,0.16)",
+            "--emerald:#2fd17a",
+            "--bronze:#c98a4b",
+            "--radius:14px",
+            "--shadow:0 18px 40px -20px rgba(0,0,0,0.65)",
+          ].join(";");
+
+          /* ---- Header ---- */
+          var now = new Date();
+          var dateStr = now.toLocaleDateString("en-US", {
+            year: "numeric", month: "long", day: "numeric",
+          });
+          var done = Object.keys(matches).filter(function (id) {
+            return !!matches[id].winner;
+          }).length;
+          var total = Object.keys(matches).length;
+
+          var headerEl = document.createElement("div");
+          headerEl.style.cssText =
+            "display:flex;align-items:center;justify-content:space-between;" +
+            "margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid #1e4536;";
+          headerEl.innerHTML =
+            '<div style="display:flex;align-items:center;gap:10px;">' +
+            '<svg width="24" height="24" viewBox="0 0 32 32" fill="none">' +
+            '<path d="M4 6H12M4 16H12M4 26H12" stroke="#e8b339" stroke-width="2.4" stroke-linecap="round"/>' +
+            '<path d="M12 6L20 14M12 26L20 18" stroke="#e8b339" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>' +
+            '<path d="M20 14V18" stroke="#e8b339" stroke-width="2.4" stroke-linecap="round"/>' +
+            '<path d="M20 16H27" stroke="#e8b339" stroke-width="2.4" stroke-linecap="round"/>' +
+            '<circle cx="28.5" cy="16" r="1.7" fill="#e8b339"/>' +
+            "</svg>" +
+            '<div style="line-height:1.15;">' +
+            '<div style="font-size:9px;letter-spacing:0.15em;color:#54705f;text-transform:uppercase;font-family:monospace;">FIFA World Cup · 2026</div>' +
+            '<div style="font-size:24px;font-weight:800;letter-spacing:0.01em;color:#f4f1e6;">BRACKET26</div>' +
+            "</div></div>" +
+            '<div style="text-align:right;font-family:monospace;font-size:10px;letter-spacing:0.08em;line-height:1.7;">' +
+            '<div style="color:#54705f;text-transform:uppercase;">My Predictions</div>' +
+            '<div style="color:#8fac9b;">' + dateStr + "</div>" +
+            '<div style="color:#2fd17a;">' + done + "/" + total + " picks made</div></div>";
+          wrap.appendChild(headerEl);
+
+          /* ---- Round label row clone ---- */
+          var labelClone = labelRowEl.cloneNode(true);
+          labelClone.style.position = "relative";
+          labelClone.style.width = cw + "px";
+          labelClone.style.height = "30px";
+          labelClone.style.marginBottom = "12px";
+          wrap.appendChild(labelClone);
+
+          /* ---- Main bracket canvas clone ---- */
+          var canvasClone = canvasEl.cloneNode(true);
+          canvasClone.style.position = "relative";
+          canvasClone.style.width = cw + "px";
+          canvasClone.style.height = ch + "px";
+          canvasClone.style.margin = "0";
+
+          /* inline critical styles so html2canvas can read them */
+          canvasClone.querySelectorAll(".match-card").forEach(function (card) {
+            card.style.background = "linear-gradient(180deg,#0f2a21,#13352a)";
+            card.style.border = "1px solid #1e4536";
+          });
+          canvasClone.querySelectorAll(".team-row.is-winner").forEach(function (row) {
+            row.style.background = "rgba(232,179,57,0.16)";
+          });
+          canvasClone.querySelectorAll(".team-row.is-winner .code").forEach(function (el) {
+            el.style.color = "#e8b339";
+          });
+          canvasClone.querySelectorAll(".team-row.is-loser").forEach(function (row) {
+            row.style.opacity = "0.42";
+          });
+          canvasClone.querySelectorAll(".team-row .code").forEach(function (el) {
+            el.style.fontFamily = "'Big Shoulders Display',sans-serif";
+            el.style.fontWeight = "800";
+            el.style.fontSize = "15px";
+            el.style.color = el.style.color || "#f4f1e6";
+          });
+          canvasClone.querySelectorAll(".team-row .name").forEach(function (el) {
+            el.style.fontFamily = "'IBM Plex Mono',monospace";
+            el.style.fontSize = "9.5px";
+            el.style.color = "#54705f";
+          });
+          canvasClone.querySelectorAll(".champion-card").forEach(function (card) {
+            card.style.background = "linear-gradient(180deg,#0f2a21,#13352a)";
+            card.style.display = "flex";
+            card.style.flexDirection = "column";
+            card.style.alignItems = "center";
+            card.style.justifyContent = "center";
+            card.style.textAlign = "center";
+            card.style.gap = "6px";
+            card.style.padding = "22px 14px";
+          });
+          canvasClone.querySelectorAll(".champion-card.is-revealed").forEach(function (card) {
+            card.style.borderColor = "#e8b339";
+          });
+          canvasClone.querySelectorAll(".champion-card .code").forEach(function (el) {
+            if (el.textContent !== "\u2014") el.style.color = "#e8b339";
+          });
+          canvasClone.querySelectorAll(".champion-card .eyebrow").forEach(function (el) {
+            el.style.fontFamily = "monospace";
+            el.style.fontSize = "9.5px";
+            el.style.letterSpacing = "0.16em";
+            el.style.color = "#54705f";
+            el.style.textTransform = "uppercase";
+          });
+          canvasClone.querySelectorAll(".champion-card .name").forEach(function (el) {
+            el.style.fontSize = "11.5px";
+            el.style.color = "#8fac9b";
+          });
+          canvasClone.querySelectorAll(".champion-card .placeholder-text").forEach(function (el) {
+            el.style.fontFamily = "monospace";
+            el.style.fontSize = "10px";
+            el.style.color = "#54705f";
+            el.style.textTransform = "uppercase";
+          });
+          canvasClone.querySelectorAll(".label-item").forEach(function (el) {
+            el.style.fontFamily = "monospace";
+            el.style.fontSize = "10px";
+            el.style.color = el.classList.contains("is-complete") ? "#e8b339" : "#54705f";
+          });
+          /* fix SVG connector strokes — replace CSS-variable refs with literals */
+          canvasClone.querySelectorAll(".conn-path").forEach(function (path) {
+            path.style.stroke = path.classList.contains("is-active") ? "#2fd17a" : "#1e4536";
+            path.style.strokeWidth = "2";
+            path.style.fill = "none";
+            path.style.opacity = "0.9";
+            path.removeAttribute("stroke");
+          });
+
+          wrap.appendChild(canvasClone);
+
+          /* ---- Third-place section ---- */
+          var thirdWrap = document.createElement("div");
+          thirdWrap.style.cssText =
+            "margin-top:30px;padding-top:22px;border-top:1px solid #1e4536;max-width:420px;";
+          thirdWrap.innerHTML =
+            '<div style="display:flex;align-items:center;gap:10px;margin-bottom:11px;">' +
+            '<span style="font-family:monospace;font-size:9px;letter-spacing:0.13em;color:#c98a4b;text-transform:uppercase;border:1px solid #c98a4b;padding:3px 9px;border-radius:999px;">Bronze</span>' +
+            '<span style="font-size:12px;color:#8fac9b;font-family:Archivo,sans-serif;">Third Place Play-off</span>' +
+            "</div>";
+
+          var thirdSlotEl = document.getElementById("thirdPlaceSlot");
+          var thirdCardClone = thirdSlotEl.cloneNode(true);
+          var thirdCard = thirdCardClone.querySelector(".match-card");
+          if (thirdCard) {
+            thirdCard.style.cssText =
+              "background:linear-gradient(180deg,#0f2a21,#13352a);border:1px solid #1e4536;" +
+              "position:relative;width:100%;height:auto;border-radius:14px;overflow:hidden;" +
+              "display:flex;flex-direction:column;";
+            thirdCard.querySelectorAll(".team-row").forEach(function (row) {
+              row.style.cssText =
+                "display:flex;align-items:center;gap:10px;padding:0 13px;height:54px;" +
+                "background:transparent;border:none;width:100%;";
+              if (row.classList.contains("is-winner")) row.style.background = "rgba(232,179,57,0.16)";
+              if (row.classList.contains("is-loser")) row.style.opacity = "0.42";
+            });
+            thirdCard.querySelectorAll(".team-row + .team-row").forEach(function (row) {
+              row.style.borderTop = "1px solid #142b22";
+            });
+            thirdCard.querySelectorAll(".team-row .code").forEach(function (el) {
+              el.style.fontFamily = "'Big Shoulders Display',sans-serif";
+              el.style.fontWeight = "800";
+              el.style.fontSize = "15px";
+              el.style.color = el.closest(".team-row").classList.contains("is-winner") ? "#e8b339" : "#f4f1e6";
+            });
+            thirdCard.querySelectorAll(".team-row .name").forEach(function (el) {
+              el.style.fontFamily = "monospace";
+              el.style.fontSize = "9.5px";
+              el.style.color = "#54705f";
+            });
+          }
+          thirdWrap.appendChild(thirdCardClone);
+          wrap.appendChild(thirdWrap);
+
+          /* ---- Champion summary (if decided) ---- */
+          var champMatch = matches["final-0"];
+          if (champMatch && champMatch.winnerTeam) {
+            var champ = champMatch.winnerTeam;
+            var champBar = document.createElement("div");
+            champBar.style.cssText =
+              "margin-top:22px;padding:18px 20px;border-radius:14px;border:1px solid #e8b339;" +
+              "background:linear-gradient(180deg,#0f2a21,#13352a);" +
+              "display:flex;align-items:center;gap:14px;";
+            champBar.innerHTML =
+              '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;">' +
+              '<path d="M7 3H17V7C17 10.3 14.8 13 12 13C9.2 13 7 10.3 7 7V3Z" stroke="#e8b339" stroke-width="1.6"/>' +
+              '<path d="M7 5H4.5C4.5 8 6 9.5 8 9.8" stroke="#e8b339" stroke-width="1.6" stroke-linecap="round"/>' +
+              '<path d="M17 5H19.5C19.5 8 18 9.5 16 9.8" stroke="#e8b339" stroke-width="1.6" stroke-linecap="round"/>' +
+              '<path d="M12 13V17" stroke="#e8b339" stroke-width="1.6"/>' +
+              '<path d="M8 21H16" stroke="#e8b339" stroke-width="1.6" stroke-linecap="round"/>' +
+              '<path d="M9 17H15L16 21H8L9 17Z" stroke="#e8b339" stroke-width="1.6" stroke-linejoin="round"/>' +
+              "</svg>" +
+              '<div style="flex:1;">' +
+              '<div style="font-size:9px;letter-spacing:0.14em;color:#54705f;text-transform:uppercase;font-family:monospace;margin-bottom:4px;">World Champion</div>' +
+              '<div style="font-size:28px;font-weight:800;color:#e8b339;letter-spacing:0.01em;line-height:1;">' + champ.code + "</div>" +
+              '<div style="font-size:11px;color:#8fac9b;margin-top:2px;">' + champ.name + "</div>" +
+              "</div>" +
+              '<div style="width:6px;height:40px;border-radius:3px;background:linear-gradient(to bottom,' +
+              champ.c1 + " 50%," + champ.c2 + ' 50%);flex-shrink:0;"></div>';
+            wrap.appendChild(champBar);
+          }
+
+          /* ---- Footer watermark ---- */
+          var footerEl = document.createElement("div");
+          footerEl.style.cssText =
+            "margin-top:22px;font-family:monospace;font-size:9px;color:#54705f;" +
+            "letter-spacing:0.08em;text-align:center;text-transform:uppercase;";
+          footerEl.textContent =
+            "Generated with BRACKET26 \u00b7 FIFA World Cup 2026 Predictor";
+          wrap.appendChild(footerEl);
+
+          document.body.appendChild(wrap);
+
+          /* -- run html2canvas -- */
+          html2canvas(wrap, {
+            backgroundColor: "#07140f",
+            scale: 2,
+            useCORS: true,
+            allowTaint: true,
+            logging: false,
+            onclone: function (clonedDoc) {
+              var root = clonedDoc.documentElement;
+              [
+                ["--bg", "#07140f"], ["--panel", "#0f2a21"], ["--panel-2", "#13352a"],
+                ["--line", "#1e4536"], ["--line-soft", "#142b22"],
+                ["--ink", "#f4f1e6"], ["--ink-dim", "#8fac9b"], ["--ink-faint", "#54705f"],
+                ["--gold", "#e8b339"], ["--gold-soft", "rgba(232,179,57,0.16)"],
+                ["--emerald", "#2fd17a"], ["--bronze", "#c98a4b"],
+                ["--radius", "14px"], ["--shadow", "0 18px 40px -20px rgba(0,0,0,0.65)"],
+              ].forEach(function (pair) {
+                root.style.setProperty(pair[0], pair[1]);
+              });
+            },
+          })
+            .then(function (canvas) {
+              if (document.body.contains(wrap)) document.body.removeChild(wrap);
+              var link = document.createElement("a");
+              var ts = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+              link.download = "bracket26-wc2026-" + ts + ".png";
+              link.href = canvas.toDataURL("image/png");
+              link.click();
+              btn.innerHTML = originalHTML;
+              btn.disabled = false;
+              showExportToast();
+              announce("Bracket exported as image.");
+            })
+            .catch(function (err) {
+              console.error("Export error:", err);
+              if (document.body.contains(wrap)) document.body.removeChild(wrap);
+              btn.innerHTML = originalHTML;
+              btn.disabled = false;
+              alert(
+                "Export failed: " +
+                  (err && err.message ? err.message : "Unknown error") +
+                  ". Please try again.",
+              );
+            });
+        }
+
+        function bindResetModal() {          var modal = document.getElementById("resetModal");
+          document
+            .getElementById("resetBtn")
+            .addEventListener("click", function () {
+              modal.classList.remove("hidden");
+            });
+          document
+            .getElementById("cancelReset")
+            .addEventListener("click", function () {
+              modal.classList.add("hidden");
+            });
+          document
+            .getElementById("confirmReset")
+            .addEventListener("click", function () {
+              resetAll();
+              modal.classList.add("hidden");
+            });
+          modal.addEventListener("click", function (e) {
+            if (e.target === modal) modal.classList.add("hidden");
+          });
+          document.addEventListener("keydown", function (e) {
+            if (e.key === "Escape") modal.classList.add("hidden");
+          });
+        }
+
+        function debounce(fn, ms) {
+          var t;
+          return function () {
+            var args = arguments;
+            clearTimeout(t);
+            t = setTimeout(function () {
+              fn.apply(null, args);
+            }, ms);
+          };
+        }
+
+        /* =========================================================
+     9. INIT
+     ========================================================= */
+        function init() {
+          matches = buildMatches(TEAMS);
+          load();
+          resolveAll();
+          buildDOM();
+          layout();
+          renderAll();
+          bindNavPills();
+          bindDragScroll();
+          bindResetModal();
+          bindExportBtn();
+          window.addEventListener("resize", debounce(layout, 150));
+        }
+
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", init);
+        } else {
+          init();
+        }
+      })();
+    </script>
+  </body>
+</html>
